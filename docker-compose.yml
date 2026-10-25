@@ -1,0 +1,15 @@
+# The Athene sync server as a docker-compose project: for a NAS's Container Manager or Docker app,
+# where there may be no terminal to run `docker run` in. Your accounts, books and annotations are
+# kept in the data folder beside this file, so they survive updates.
+services:
+  athene-sync:
+    image: athenereader/athene-sync
+    container_name: athene-sync
+    restart: unless-stopped
+    ports:
+      - "17200:17200"
+    volumes:
+      - ./data:/data
+    # Once your accounts are made, you can stop anyone else signing up:
+    # environment:
+    #   ATHENE_REGISTRATION: "false"

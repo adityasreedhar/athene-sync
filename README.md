@@ -24,8 +24,29 @@ docker run -d --name athene-sync --restart unless-stopped \
 Your server's address is `http://` + that computer's address + `:17200`, for example
 `http://192.168.1.20:17200`. Open it in a browser for the next steps.
 
-On a NAS you can add the image in its Docker or Container Manager app instead: publish port
-**17200**, and map a folder to `/data` so your accounts and books survive updates.
+### On a NAS without a terminal
+
+Many NAS apps run Docker without a terminal you can use (it may just say *access denied*). Their
+Container Manager or Docker app takes a compose file instead: make a folder for the server, create
+a new project in it (some apps call it an application), and paste in
+[`docker-compose.yml`](docker-compose.yml):
+
+```yaml
+services:
+  athene-sync:
+    image: athenereader/athene-sync
+    container_name: athene-sync
+    restart: unless-stopped
+    ports:
+      - "17200:17200"
+    volumes:
+      - ./data:/data
+```
+
+Your accounts, books and annotations are kept in the `data` folder beside it, so they survive
+updates. If the app wants a full path, use the full path to that folder, like
+`/volume1/docker/athene-sync/data` on a Synology. If port 17200 is taken, change only the first
+number, like `"17300:17200"`, and use that port in the address.
 
 To reach it from outside your home, put it behind a reverse proxy with a real certificate.
 
@@ -67,7 +88,8 @@ docker run -d --name athene-sync --restart unless-stopped \
 ```
 
 Your accounts, books and annotations stay in the `athene-sync` volume. On a NAS, pull the image
-again in its Docker app and recreate the container with the same port and folder.
+again in its Docker app and rebuild the project (or recreate the container with the same port and
+folder).
 
 ## What it keeps
 
